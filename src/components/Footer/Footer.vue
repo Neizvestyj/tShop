@@ -1,8 +1,5 @@
-<script>
-export default {
-    name: 'Footer',
-    setup() { }
-};
+<script setup lang="ts">
+
 </script>
 <template>
     <footer class="footer center">

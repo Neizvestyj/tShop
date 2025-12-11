@@ -1,63 +1,80 @@
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useStore } from '../store';
 import { v4 as uuidv4 } from 'uuid';
 const store = useStore();
-const drop = ref(null);
-const selectedColor = ref("White");
-const selectedSize = ref("M");
-const localQuantity = ref(1);
-const currentImage = ref(0);
-const ide = ref(0);
-const cardCurrent = computed(() => {
-    return store.getCardCurrent || {}
+const drop = ref<number>(0);
+const selectedColor = ref<string>("White");
+const selectedSize = ref<string>("M");
+const localQuantity = ref<number>(1);
+//const currentImage = ref<number>(0);
+const ide = ref<string | number>(0);
+const cardCurrent = computed<Card | null>(() => {
+    return store.getCardCurrent || null
 
 });
+interface Card {
+    id: number;
+    ide: number | string;
+    name: string;
+    image: string;
+    price: number;
+    quantity: number;
+    trending: boolean;
+    color: string;
+    size: string;
+}
 
-const increaseQuantity = () => {
+const increaseQuantity = (): void => {
     if (cardCurrent.value && cardCurrent.value.quantity !== undefined) {
         localQuantity.value++;
         updateCardQuantity();
     }
 };
-const decreaseQuantity = () => {
+const decreaseQuantity = (): void => {
     if (localQuantity.value > 1) {
         localQuantity.value--;
         updateCardQuantity();
     }
 };
-const onInputChange = (event) => {
-    const newQuantity = parseInt(event.target.value);
-    if (!isNaN(newQuantity) && newQuantity >= 1) {
-        localQuantity.value = newQuantity;
+const onInputChange = (event: Event): void => {
+    const target = event.target as HTMLInputElement; // Приводим к HTMLInputElement
+    if (target) {
+        const newQuantity = parseInt(target.value);
+        if (!isNaN(newQuantity) && newQuantity >= 1) {
+            localQuantity.value = newQuantity;
+            updateCardQuantity();
+        } else {
+            localQuantity.value = 1;
+        }
         updateCardQuantity();
     } else {
-        localQuantity.value = 1;
-    }
-    updateCardQuantity();
+        console.error("Input target is null or undefined.");
+    };
 };
-const updateCardQuantity = () => {
+const updateCardQuantity = (): void => {
     if (cardCurrent.value && cardCurrent.value.id) {
         store.increaseQuantity({
             quantity: localQuantity.value,
-            currentImage: cardCurrent.value.id
+            currentImage: cardCurrent.value.id,
+            ide: ide.value
         });
     }
 };
-const changeColor = (color) => {
+const changeColor = (color: string): void => {
     selectedColor.value = color;
-    drop.value = false;
+    drop.value = 0;
     console.log(selectedColor.value)
 };
 
-const changeSize = (size) => {
+const changeSize = (size: string): void => {
     selectedSize.value = size;
-    drop.value = null;
+    drop.value = 0;
     console.log(selectedSize.value)
 };
 
-const addToCard = () => {
+const addToCard = (): void => {
 
     const uniqueId = uuidv4(); // Генерируем уникальный ID
     // Проверка на существование card перед использованием его id
@@ -83,8 +100,14 @@ const addToCard = () => {
 
 watch(cardCurrent, (newCard) => {
     // Синхронизируем quantity, когда card меняется
-    localQuantity.value = newCard.quantity !== undefined ? newCard.quantity : 1;
+    if (newCard) {
+        localQuantity.value = newCard.quantity !== undefined ? newCard.quantity : 1;
+    } else {
+        localQuantity.value = 1
+    }
 },
+
+
     {
         immediate: true, // Обновляем сразу, при первой загрузке
     });
@@ -224,7 +247,7 @@ watch(cardCurrent, (newCard) => {
 
                 <div v-if="drop === 3" class="quantity-selector-product">
                     <button class="button-decrease" @click="decreaseQuantity()"
-                        :disabled="cardCurrent.quantity <= 1">-</button>
+                        :disabled="cardCurrent ? cardCurrent.quantity <= 1 : false">-</button>
 
                     <input class="quantityProduct" type="number" v-model.number="localQuantity"
                         @input="onInputChange($event)" min="1" />
@@ -238,7 +261,7 @@ watch(cardCurrent, (newCard) => {
         </div>
 
         <div class="block-add-cart">
-            <button @click="addToCard(card)" class="ad-to-card">
+            <button @click="addToCard()" class="ad-to-card">
                 <svg class=" ad-to-card-carzina" width="27" height="25" viewBox="0 0 27 25" fill='none'
                     xmlns="http://www.w3.org/2000/svg">
                     <path

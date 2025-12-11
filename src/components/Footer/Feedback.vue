@@ -2,38 +2,43 @@
 import Alert from '../Alert.vue'
 import { ref, computed } from 'vue';
 import { useStore } from '../../store';
-
 const store = useStore();
-const email = ref("");
-const emailError = ref("");
+const email = ref<string>("");
+
+const emailError = ref<string>("");
 // Вычисляемая переменная для проверки валидности
-const isValid = computed(() => {
+
+const isValid = computed<boolean>(() => {
     return validateEmail(email.value) && email.value !== '';
 });
+
 // Вычисляемое свойство для сообщения об ошибке
-const emailErrorMessage = computed(() => {
+
+const emailErrorMessage = computed<string>(() => {
     return emailError.value !== '' ? emailError.value : '';
 });
+
 // Валидация адреса электронной почты
-const validateEmail = (email) => {
+const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(String(email).toLowerCase());
 };
-const submit = (event) => {
+const submit = (/*event: SubmitEvent*/) => {
     if (isValid.value) {
-        store.dispatch('login');
+        store.login();
         emailError.value = '';
         email.value = "";
         // Используем мутацию, чтобы изменить состояние
-        store.commit('setIsValid', true);
+        store.setIsValid(true);
         //store.state.isValid = true;
     } else {
         emailError.value = 'Введите корректный адрес электронной почты';
-        store.commit('setIsValid', false);
+        store.setIsValid(false);
         // store.state.isValid = false;
     }
 
 };
+
 
 
 </script>
@@ -44,7 +49,7 @@ const submit = (event) => {
         <Alert />
 
         <div class="feedback-block-center center">
-            <div class="option"><img width="97px" height="97px" src="../../img/statement.png" alt="option">
+            <div class="option"><img width="97px" height="97px" src="../../../public/img/statement.png" alt="option">
                 <p class="option-text">“Vestibulum quis porttitor dui!<span class="option-italic">Quisque viverra
                         nunc mi, a pulvinar purus condimentum“</span></p>
             </div>

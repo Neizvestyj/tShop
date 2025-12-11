@@ -1,17 +1,26 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import { useStore } from '../store';
 const sliderItemsPerPage = 1;
 const store = useStore();
-const id = computed(() => {
-    if (id.value === 5) {
-        return 1
-    }
-    return store.id;
+const id = computed<number>(() => {
+    return store.id === 5 ? 1 : store.id;
 });
-const cards = computed(() => {
+interface Card {
+    id: number;
+    ide: number | string;
+    name: string;
+    image: string;
+    price: number;
+    quantity: number;
+    trending: boolean;
+    color: string;
+    size: string;
+}
+const cards = computed<Card[]>(() => {
     return store.cards;
 });
+
 const cardsSlice = computed(() => {
 
     const start = (id.value) * sliderItemsPerPage;

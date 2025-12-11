@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, } from 'vue';
 import { useStore } from '../store';
 import filterProduct from './filterProduct.vue';
@@ -6,12 +6,23 @@ import textProduct from './textProduct.vue';
 //import Swiper from 'swiper';
 //import 'swiper/swiper-bundle.css';
 const store = useStore();
-const swiperInstance = ref(null); // для хранения экземпляра Swiper
-const current = ref(0);
+const swiperInstance = ref<Swiper | null>(null); // для хранения экземпляра Swiper
+const current = ref<number>(0);
 const filteredCards = computed(() => {
   return store.filteredCards || [];
 });
-const card = computed(() => {// карточка !!!!!!!!!!
+interface Card {
+  id: number;
+  ide: number | string;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+  trending: boolean;
+  color: string;
+  size: string;
+}
+const card = computed<Card | null>(() => {// карточка !!!!!!!!!!
   // console.log(current.value);
   // Проверяем, что current.value в пределах допустимых значений
   if (current.value < 0 || current.value >= filteredCards.value.length) {
@@ -56,18 +67,16 @@ onBeforeUnmount(() => {
     swiperInstance.value = null;
   }
 });
-const goNext = () => {
-  if (swiperInstance.value)
-    swiperInstance.value.slideNext();
+const goNext = (page: number) => {
+  swiperInstance.value?.slideNext();
   store.sliderPageNext();
 };
-const goPrev = () => {
-  if (swiperInstance.value)
-    swiperInstance.value.slidePrev();
+const goPrev = (page: number) => {
+  swiperInstance.value?.slidePrev();
   store.sliderItemsPerPagePrev();
 };
 // page — 0-based индекс
-const goToPageSlider = (page) => {
+const goToPageSlider = (page: number) => {
   if (!swiperInstance.value || !filteredCards.value.length) return;
   const safePage = Math.max(0, Math.min(page, filteredCards.value.length - 1));
   swiperInstance.value.slideTo(safePage);

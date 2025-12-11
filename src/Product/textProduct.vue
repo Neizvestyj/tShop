@@ -1,19 +1,27 @@
-<script setup>
+<script setup lang="ts">
 
-import { computed } from 'vue';
-import { useStore } from '../store';
-import filterProduct from './filterproduct.vue';
+//import { computed } from 'vue';
+//import { useStore } from '../store';
+import FilterProduct from './filterProduct.vue';
 import { defineProps } from 'vue';
 
+interface Card {
+    id: number;
+    ide: number | string;
+    name: string;
+    image: string;
+    price: number;
+    quantity: number;
+    trending: boolean;
+    color: string;
+    size: string;
+}
+const props = defineProps<{ card: Card }>()
 
-const props = defineProps({ card: { type: Object, required: true, }, });
 
-const store = useStore();
-const grandTotal = computed(() => store.sum
-);
-const cardCurrent = computed(() =>
-    store.getCardCurrent
-);
+//const store = useStore();
+//const grandTotal:number = computed<number>(() => store.sum);
+//const cardCurrent = computed<Card | null>(() => store.getCardCurrent);
 </script>
 
 <template>
@@ -36,7 +44,7 @@ const cardCurrent = computed(() =>
                     competencies rather than exceptional portals. </p>
             </div>
             <div>
-                <p class="sale561">$ {{ card.price }}</p>
+                <p class="sale561">$ {{ props.card?.price }}</p>
             </div>
             <hr class="hr">
 
