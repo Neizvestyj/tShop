@@ -1,15 +1,13 @@
 <script setup lang="ts">
 
-import { computed } from 'vue';
-import { useStore } from '../store';
+//import { computed } from 'vue';
+//import { useStore } from '../store';
 import cardSlider from './cardSlider.vue';
 import cat from './cat.vue';
 
-const store = useStore();
-const cards = computed(() => {
-    return store.getSliderCatalog;
-});
-console.log(cards.value)
+//const store = useStore();
+//const cards = computed(() => store.getSliderCatalog;);
+//console.log(cards.value)
 </script>
 
 <template>

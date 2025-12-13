@@ -3,7 +3,7 @@
 import { defineStore } from 'pinia';
 interface Card {
     id: number;
-    ide: number;
+    ide: number | string;
     name: string;
     image: string; // URL изображения
     price: number;
@@ -11,6 +11,7 @@ interface Card {
     trending: boolean; // Флаг трендовости
     color: string; // Цвет продукта
     size: string; // Размер продукта
+    removing: boolean;
 };
 
 

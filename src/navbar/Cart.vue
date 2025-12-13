@@ -16,12 +16,12 @@ interface Card {
     quantity: number;
     trending: boolean;
     removing: boolean;
-    ide: number;
+    ide: number | string;
     color: string;
     size: string;
 }
 
-const del = (card:Card) => {
+const del = (card: Card) => {
     card.removing = true;
     setTimeout(() => {
         store.del(card); // Вызываем метод удаления из хранилища
@@ -35,7 +35,7 @@ const buy = () => {
     store.buy();
 };
 //Обработка формы отправки
-const submit = (event:Event):void=> {
+const submit = (event: Event): void => {
     event.preventDefault();
     if (isValid.value) {
         store.login();
@@ -45,7 +45,7 @@ const submit = (event:Event):void=> {
         store.isValid = true;
     } else {
         emailError.value = 'Введите корректный адрес';
-        store.isValid.value = false;
+        store.isValid = false;
     }
 };
 //Очистка корщины
@@ -54,7 +54,7 @@ const clear = () => {
 };
 
 //Увилечение колличество товра
-const increaseQuantity = (card:Card) => {
+const increaseQuantity = (card: Card) => {
     card.quantity++;
     store.increaseQuantity({
         quantity: card.quantity,
@@ -66,7 +66,7 @@ const increaseQuantity = (card:Card) => {
 };
 
 //Уменьшение колличество товара
-const decreaseQuantity = (card:Card) => {
+const decreaseQuantity = (card: Card) => {
     if (card.quantity > 1) {
         card.quantity--;
         store.decreaseQuantity({
@@ -80,18 +80,19 @@ const decreaseQuantity = (card:Card) => {
 };
 
 //Обработка изминения ввода колличества
-const onInputChange = (card:Card, event:Event) => {
-const input = event.target as HTMLInputElement;
-    const value = parseInt(event.target.value);
+const onInputChange = (card: Card, event: Event) => {
+    const input = event.target as HTMLInputElement;
+    //const value = parseInt(event.target.value);
+    const value = parseInt(input.value);
 
     if (!isNaN(value) && value >= 1) {
         card.quantity = value;
         store.increaseQuantity({
-            quantity: card.quantity, currentImage: card.id
+            quantity: card.quantity, currentImage: card.id, ide: card.ide
         })
     } else {
         card.quantity = 1; store.increaseQuantity({
-            quantity: card.quantity, currentImage: card.id
+            quantity: card.quantity, currentImage: card.id, ide: card.ide
         })
     }
 };
