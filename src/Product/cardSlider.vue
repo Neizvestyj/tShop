@@ -21,6 +21,7 @@ interface Card {
   trending: boolean;
   color: string;
   size: string;
+  removing: boolean;
 }
 const card = computed<Card | null>(() => {// карточка !!!!!!!!!!
   // console.log(current.value);

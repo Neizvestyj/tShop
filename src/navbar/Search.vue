@@ -6,15 +6,15 @@ import { useStore } from '../store';
 const store = useStore(); // Используем Pinia Store
 
 const searchText = ref<string>("");
- // Создаем реактивную переменную для поиска
+// Создаем реактивную переменную для поиска
 const flag = ref<boolean>(false);
 // Создаем флаг, если необходимо
-const changeSearchFlag = (event:Event):void => {
+/*const changeSearchFlag = (event:Event):void => {
     event.preventDefault();
     flag.value = !flag.value;
-};
+};*/
 
-const submit = (event:Event):void => {
+const submit = (event: Event): void => {
     event.preventDefault(); store.searchCards(searchText.value);
     // Отправляем действие в Store
     flag.value = false;
@@ -23,7 +23,7 @@ const submit = (event:Event):void => {
     // Очищаем поле ввода
 };
 
-const stopPropagation = (event:Event):void => {
+const stopPropagation = (event: Event): void => {
     event.stopPropagation(); // Остановим всплытие события
 };
 </script>

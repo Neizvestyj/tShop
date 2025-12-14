@@ -126,7 +126,7 @@ export const useStore = defineStore('store', {
 
         //фильтрация в Catalog
         //компонент navFilter!
-        sortFilteredCards({ filter, priceRanges }) {
+        sortFilteredCards({ filter, priceRanges }: { filter: string, priceRanges: string[] }) {
             // let filteredProducts = [...this.cards];
             let filteredProducts = this.cards.slice(); // Используем slice() для создания копии массива 
             // Фильтрация по диапазонам цены
@@ -185,7 +185,7 @@ export const useStore = defineStore('store', {
             this.cart = [];
             console.log("Clearing cart");
         },
-        increaseQuantity({ quantity, currentImage, ide }) {
+        increaseQuantity({ quantity, currentImage, ide }: { quantity: number, currentImage: number, ide: string }) {
             console.log(" increaseQuantity")
             console.log("decreaseQuantity called with:", { quantity, currentImage });
 
@@ -205,7 +205,7 @@ export const useStore = defineStore('store', {
             }
         },
         //!
-        decreaseQuantity({ quantity, currentImage, ide }) {
+        decreaseQuantity({ quantity, currentImage, ide }: { quantity: number, currentImage: number, ide: string }) {
             console.log(" decreaseQuantity")
             console.log("decreaseQuantity called with:", { quantity, currentImage, ide });
             const card = this.cart.find(item => item.ide === ide);
@@ -235,7 +235,7 @@ export const useStore = defineStore('store', {
             this.currentPage = page;
         },
         //компонент Product-filterProduct
-        addToCard(payload) {
+        addToCard(payload: any) {
             const { ide, currentImage, color, size, quantity } = payload;
             if (currentImage == null) {
                 console.error(" 4 currentImage is null");
@@ -243,11 +243,17 @@ export const useStore = defineStore('store', {
             }
             console.log('Уникальный ID ' + ide)
             const productToAdd = this.filteredCards.find(item => item.id === currentImage);
-            // const existingProduct = this.cart.find(item => item.id === productToAdd.id && item.color === color && item.size === size);
-            const existingProduct = this.cart.find(item => item.ide === productToAdd.ide && item.color === color && item.size === size);
+            if (!productToAdd) {
+                console.error("Product not found in filteredCards");
+                return;
+            }
+            const existingProduct = this.cart.find(item => item.id === productToAdd.id && item.color === color && item.size === size);
+            // Проверка на случай, если productToAdd не найден
+
+            //const existingProduct = this.cart.find(item => item.ide === productToAdd.ide && item.color === color && item.size === size);
             if (existingProduct) {
                 existingProduct.quantity++;
-                state.sum += existingProduct.price;
+                this.sum += existingProduct.price
                 this.saveLocal();
                 //localStorage.setItem("cart", JSON.stringify(this.cart));
             } else {
